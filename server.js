@@ -11,12 +11,13 @@ app.use(cookieParser());
 app.get('/health', (req, res) => res.json({ success: true, service: 'nesta-job-fair' }));
 app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/companies', require('./routes/companies'));
+app.use('/api/v1/bookings', require('./routes/bookings'));
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
 app.use(require('./middleware/error'));
 async function start() {
   if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) throw new Error('Set JWT_SECRET to a random value of at least 32 characters');
   await connectDB();
-  await Promise.all([require('./models/User').init(), require('./models/Company').init()]);
+  await Promise.all([require('./models/User').init(), require('./models/Company').init(), require('./models/Booking').init()]);
   return app.listen(process.env.PORT || 5000, () => console.log(`Nesta API on port ${process.env.PORT || 5000}`));
 }
 if (require.main === module) start().catch((error) => { console.error(error.message); process.exitCode = 1; });

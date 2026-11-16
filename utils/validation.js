@@ -12,4 +12,8 @@ function objectId(value, label = 'id') {
   if (typeof value !== 'string' || !/^[a-f\d]{24}$/i.test(value) || !mongoose.isValidObjectId(value)) fail(`Invalid ${label}`);
   return value;
 }
-module.exports = { fail, objectBody, strings, objectId };
+function interviewDate(value) {
+  if (typeof value !== 'string' || !/^2022-05-(10|11|12|13)$/.test(value)) fail('interviewDate must be YYYY-MM-DD from 2022-05-10 through 2022-05-13');
+  return new Date(`${value}T00:00:00.000Z`);
+}
+module.exports = { fail, objectBody, strings, objectId, interviewDate };
