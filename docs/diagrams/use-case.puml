@@ -15,6 +15,7 @@ usecase "Delete own booking" as Delete
 usecase "View all bookings" as All
 usecase "Edit any booking" as AnyEdit
 usecase "Delete any booking" as AnyDelete
+usecase "Check interview overlap" as Overlap
 }
 Visitor --> Register
 Visitor --> Login
@@ -29,4 +30,11 @@ Admin --> Logout
 Admin --> All
 Admin --> AnyEdit
 Admin --> AnyDelete
+Create ..> Overlap : <<include>>
+Edit ..> Overlap : <<include>>
+AnyEdit ..> Overlap : <<include>>
+note right of Overlap
+Same user and date, across all companies.
+Adjacent intervals are allowed.
+end note
 @enduml

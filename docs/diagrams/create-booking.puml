@@ -11,17 +11,23 @@ alt invalid token
 Auth --> Student: 401
 else authenticated
 Router -> Controller: addBooking(req)
-Controller -> Controller: validate date
-Controller -> Model: find company and user's slots
+Controller -> Controller: validate date + startTime/endTime
+Controller -> Model: find company, user schedule and slots
 Model -> MongoDB: query
 MongoDB --> Model: results
 Model --> Controller: results
-alt invalid date / company missing / quota full
+alt overlapping interval for same user/date
+Controller --> Student: 409 Conflict
+else invalid date/time / company missing / quota full
 Controller --> Student: 400 / 404
 else eligible
-Controller -> Model: create(user from JWT, date, company, slot)
-Model -> MongoDB: insert; unique(user,slot)
-alt duplicate slot from concurrent request
+Controller -> Model: create(user from JWT, date, times, company, slot)
+Model -> MongoDB: insert; unique(user,slot)\nunique(user,date,occupiedMinutes)
+alt overlapping minute from concurrent request
+MongoDB --> Model: duplicate minute key
+Model --> Controller: overlap error
+Controller --> Student: 409 Conflict
+else duplicate slot from concurrent request
 MongoDB --> Model: duplicate key
 Model --> Controller: duplicate key
 Controller -> Controller: re-read and retry

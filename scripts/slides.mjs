@@ -1,6 +1,6 @@
 export async function build({ presentation, input }) {
   const C = { bg:'#F7F5EF', ink:'#17332F', muted:'#52645E', green:'#12645A', light:'#E4EDE6', orange:'#AE582B' };
-  const repo='https://github.com/2110503-69CP/503cp69-a7-2-yyyongfu';
+  const repo='https://github.com/Nesta1223/Nesta-JobFair';
   function text(s,str,x,y,w,h,size=26,color=C.ink,bold=false) {
     const sh=s.shapes.add({geometry:'textbox',position:{left:x,top:y,width:w,height:h},fill:'none',line:{fill:'none',width:0}});
     sh.text=str;sh.text.style={fontFamily:'Arial',fontSize:size,color,bold};return sh;
@@ -103,13 +103,13 @@ export async function build({ presentation, input }) {
     text(e,'GET /api/v1/bookings/export',75,170,1100,60,34,C.green,true);
     text(e,'One CSV file with your dates, companies\nand contact details.',75,275,1110,115,36);
     text(e,'Same JWT protection\nOwner filter before export\nQuoted cells + formula neutralization',80,440,1100,145,28);
-    text(e,'Watch the 5-minute implementation tutorial',80,611,1120,35,22,C.orange).hyperlink={uri:repo+'/raw/refs/heads/nesta-final-project/delivery/extra-credit-tutorial.mp4',isExternal:true};
-    const f=slide('nesta',11,'Show actual GitHub Contributors. Do not invent separate authorship. Both members should rehearse and describe their actual contribution. Links point to project branch.');
+    text(e,'Watch the 5-minute implementation tutorial',80,611,1120,35,22,C.orange).hyperlink={uri:repo+'/raw/refs/heads/main/delivery/extra-credit-tutorial.mp4',isExternal:true};
+    const f=slide('nesta',11,'Show actual GitHub Contributors. Do not invent separate authorship. Both members should rehearse and describe their actual contribution. Links point to Nesta1223/Nesta-JobFair main and its actual Contributors.');
     text(f,'Nontakorn Krairaveeroj',75,175,1100,55,34,C.ink,true);text(f,'6732019121  ·  github.com/YYYongFu',75,240,1100,45,25,C.muted);
     text(f,'Passatorn Jindawong',75,340,1100,55,34,C.ink,true);text(f,'6732026521  ·  github.com/Nesta1223',75,405,1100,45,25,C.muted);
-    text(f,'Code + diagrams + tutorial',75,515,1100,40,25,C.green,true);
-    text(f,repo+'/tree/nesta-final-project',75,563,1140,45,21,C.ink).hyperlink={uri:repo+'/tree/nesta-final-project',isExternal:true};
-    text(f,'Teamwork: '+repo+'/graphs/contributors',75,615,1140,40,19,C.muted).hyperlink={uri:repo+'/graphs/contributors',isExternal:true};
+    text(f,'Repository & team contributions',75,515,1100,40,25,C.green,true);
+    text(f,repo+'/tree/main',75,563,1140,45,21,C.ink).hyperlink={uri:repo+'/tree/main',isExternal:true};
+    text(f,'Contributors: '+repo+'/graphs/contributors',75,615,1140,40,19,C.muted).hyperlink={uri:repo+'/graphs/contributors',isExternal:true};
   }
   await presentation.render({slide: input.batch===1?[1,2,3]:input.batch===2?[4,5,6]:[7,8,9,10]});
   return {count:presentation.slides.items.length};

@@ -34,6 +34,8 @@ tel: String
 }
 class Booking <<Representation>> {
 interviewDate: Date
+startTime: HH:mm
+endTime: HH:mm
 user: ObjectId
 company: Company
 createdAt: Date
@@ -47,4 +49,9 @@ Bookings --> BookingResource : <<Path>> /{id}
 Companies ..> Company : <<use>>
 CompanyBookings ..> Booking : <<use>>
 BookingResource ..> Booking : <<use>>
+note right of Booking
+Same user + date: no overlapping intervals.
+POST and PUT enforce this constraint.
+Internal unique index reserves occupied minutes.
+end note
 @enduml

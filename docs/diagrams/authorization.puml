@@ -19,10 +19,26 @@ else not owner AND not admin
 Controller --> Client: 403; no mutation
 else owner OR admin
 Controller -> Controller: validate allowed update fields if PUT
-Controller -> Booking: populate / save / deleteOne
+alt PUT
+Controller -> Booking: find owner schedule; exclude this booking
+Booking -> MongoDB: query same owner + date
+MongoDB --> Booking: schedule
+Booking --> Controller: schedule
+alt overlap
+Controller --> Client: 409; do not save
+else no overlap
+Controller -> Booking: save with unique minute index
+Booking -> MongoDB: atomic save; duplicate minute -> 409
+MongoDB --> Booking: saved result (or conflict)
+Booking --> Controller: result
+Controller --> Client: 200 on success / 409 on conflict
+end
+else GET or DELETE
+Controller -> Booking: GET populate / DELETE deleteOne
 Booking -> MongoDB: read / write
 MongoDB --> Booking: result
 Booking --> Controller: result
-Controller --> Client: 200
+Controller --> Client: 200 when successful
+end
 end
 @enduml

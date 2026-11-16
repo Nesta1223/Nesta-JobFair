@@ -8,7 +8,9 @@ Project #3 · 2110503 Software Development · 2026/1
 | Passatorn Jindawong | 6732026521 | [Nesta1223](https://github.com/Nesta1223) |
 
 Developed from Assignment 7.2, baseline `e957b3964f7157b27997c084c8ecf2bb3e90e8ed`.
-Final project branch: **nesta-final-project**. Original Assignment7 remains on `main`.
+Project repository: [Nesta1223/Nesta-JobFair](https://github.com/Nesta1223/Nesta-JobFair), branch **main**.
+
+[GitHub Contributors](https://github.com/Nesta1223/Nesta-JobFair/graphs/contributors) · [Contribution evidence](docs/teamwork.md)
 
 ## Run for rehearsal
 
