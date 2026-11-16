@@ -22,7 +22,7 @@ async function request(method, path, body, token, expected, extraHeaders = {}) {
   const text = await response.text();
   const duration = performance.now() - start;
   measurements.push({ method, path, status: response.status, durationMs: Math.round(duration * 100) / 100 });
-  if (expected !== undefined) assert.equal(response.status, expected, `${method} ${path}: ${text}`);
+  if (expected != null) assert.equal(response.status, expected, `${method} ${path}: ${text}`);
   return { response, text, data: response.headers.get('content-type')?.includes('application/json') ? JSON.parse(text) : null };
 }
 const register = (email, overrides = {}) => ({ name: 'Test Student', tel: '0812345678', email, password: 'Student!2026', ...overrides });
@@ -165,7 +165,7 @@ test('ROBUSTNESS: malformed id and missing record', async () => {
   await request('GET', `/bookings/${new mongoose.Types.ObjectId()}`, undefined, aToken, 404);
 });
 test('FR3: concurrent creation cannot exceed quota', async () => {
-  const outcomes = await Promise.all(Array.from({ length: 8 }, () => request('POST', `/companies/${seeded.companies[0].id}/bookings`, { interviewDate: '2022-05-10' }, bToken)));
+  const outcomes = await Promise.all(Array.from({ length: 8 }, (_, i) => request('POST', `/companies/${seeded.companies[0].id}/bookings`, { interviewDate: '2022-05-10', startTime: `${String(9 + i).padStart(2, '0')}:00`, endTime: `${String(10 + i).padStart(2, '0')}:00` }, bToken)));
   assert.equal(outcomes.filter(x => x.response.status === 201).length, 3);
   assert.equal(outcomes.filter(x => x.response.status === 400).length, 5);
   assert.equal(await Booking.countDocuments({ user: b.id }), 3);
@@ -178,4 +178,82 @@ test('FR2: logout clears cookie; discarded credentials fail; copied JWT remains 
 });
 test('NFR: observed local requests finish within 3000 ms', () => {
   assert.ok(measurements.every(x => x.durationMs < 3000), JSON.stringify(measurements.filter(x => x.durationMs >= 3000)));
+});
+
+async function freshUser() {
+  const user = await User.create(register('overlap-' + new mongoose.Types.ObjectId() + '@nesta.example'));
+  return { user, token: user.getSignedJwtToken() };
+}
+const timed = (token, startTime, endTime, expected = 201, company = seeded.companies[0].id, date = '2022-05-10') =>
+  create(date, token, expected, company, { startTime, endTime });
+test('ADDITIONAL: partial, contained, enclosing and identical overlaps across companies are rejected', async () => {
+  const { token } = await freshUser();
+  await timed(token, '10:00', '11:00');
+  for (const [start, end] of [['09:30', '10:30'], ['10:30', '11:30'], ['10:15', '10:45'], ['09:00', '12:00'], ['10:00', '11:00']]) {
+    const result = await timed(token, start, end, 409, seeded.companies[1].id);
+    assert.match(result.data.message, /overlaps/);
+  }
+});
+test('ADDITIONAL: adjacent sessions, another date and another user are allowed', async () => {
+  const { token } = await freshUser(), other = await freshUser();
+  await timed(token, '10:00', '11:00');
+  await timed(token, '11:00', '12:00');
+  await timed(token, '10:00', '11:00', 201, seeded.companies[0].id, '2022-05-11');
+  await timed(other.token, '10:00', '11:00');
+});
+test('ADDITIONAL: invalid times and reversed ranges rejected', async () => {
+  const { token } = await freshUser();
+  for (const [start, end] of [['9:00', '10:00'], ['24:00', '24:00'], ['10:60', '12:00'], ['11:00', '10:00'], ['10:00', '10:00'], [null, '11:00'], ['10:00', null]]) {
+    await timed(token, start, end, 400);
+  }
+});
+test('ADDITIONAL: edits exclude self and admin checks booking owner; failed edits preserve data', async () => {
+  const { token } = await freshUser();
+  const first = (await timed(token, '10:00', '11:00')).data.data;
+  const second = (await timed(token, '12:00', '13:00')).data.data;
+  await request('PUT', '/bookings/' + first._id, { startTime: '10:00', endTime: '11:00' }, token, 200);
+  for (const actor of [token, adminToken]) {
+    await request('PUT', '/bookings/' + second._id, { startTime: '10:30', endTime: '11:30' }, actor, 409);
+  }
+  assert.equal((await Booking.findById(second._id)).startTime, '12:00');
+  await request('DELETE', '/bookings/' + first._id, undefined, token, 200);
+  await request('PUT', '/bookings/' + second._id, { startTime: '10:30', endTime: '11:30' }, token, 200);
+});
+test('ADDITIONAL: legacy date-only booking blocks the day', async () => {
+  const { token } = await freshUser();
+  await create('2022-05-10', token);
+  await timed(token, '15:00', '16:00', 409);
+});
+test('ADDITIONAL: simultaneous overlapping creates allow exactly one', async () => {
+  const { token, user } = await freshUser();
+  const outcomes = await Promise.all(Array.from({ length: 8 }, (_, i) => timed(token, i % 2 ? '10:30' : '10:00', '11:00', null)));
+  assert.equal(outcomes.filter(x => x.response.status === 201).length, 1);
+  assert.equal(outcomes.filter(x => x.response.status === 409).length, 7);
+  assert.equal(await Booking.countDocuments({ user: user.id }), 1);
+});
+test('ADDITIONAL: simultaneous edits to an overlapping interval allow exactly one', async () => {
+  const { token } = await freshUser();
+  const first = (await timed(token, '09:00', '10:00')).data.data;
+  const second = (await timed(token, '12:00', '13:00')).data.data;
+  const outcomes = await Promise.all([first, second].map(item => request('PUT', '/bookings/' + item._id, { startTime: '10:30', endTime: '11:30' }, token)));
+  assert.deepEqual(outcomes.map(x => x.response.status).sort(), [200, 409]);
+});
+
+test('ADDITIONAL: moving a booking to another date checks that date for conflicts', async () => {
+  const { token } = await freshUser();
+  await timed(token, '10:00', '11:00');
+  const nextDay = (await timed(token, '10:30', '11:30', 201, seeded.companies[0].id, '2022-05-11')).data.data;
+  await request('PUT', '/bookings/' + nextDay._id, { interviewDate: '2022-05-10' }, token, 409);
+  assert.equal((await Booking.findById(nextDay._id)).interviewDate.toISOString().slice(0, 10), '2022-05-11');
+});
+test('ADDITIONAL: migration reserves legacy dates and is repeatable', async () => {
+  const { user, token } = await freshUser();
+  const legacy = await Booking.collection.insertOne({ user: user._id, company: seeded.companies[0]._id, interviewDate: new Date('2022-05-12'), slot: 1 });
+  const migrate = require('../scripts/migrate-booking-times');
+  await migrate();
+  await migrate();
+  const stored = await Booking.findById(legacy.insertedId).select('+occupiedMinutes');
+  assert.equal(stored.startTime, '00:00'); assert.equal(stored.endTime, '24:00');
+  assert.equal(stored.occupiedMinutes.length, 1440);
+  await timed(token, '10:00', '11:00', 409, seeded.companies[0].id, '2022-05-12');
 });

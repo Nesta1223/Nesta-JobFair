@@ -1,7 +1,7 @@
 name: Nesta project tests
 on:
   push:
-    branches: [nesta-final-project]
+    branches: [main, nesta-final-project]
   pull_request:
     branches: [main]
   workflow_dispatch:

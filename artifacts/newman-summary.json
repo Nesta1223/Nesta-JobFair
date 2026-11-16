@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-11-16T12:03:54.612Z",
+  "recordedAt": "2026-11-16T14:22:50.721Z",
   "stats": {
     "iterations": {
       "total": 1,
@@ -48,10 +48,10 @@
     }
   },
   "timings": {
-    "responseAverage": 35.38709677419355,
-    "responseMin": 3,
-    "responseMax": 141,
-    "responseSd": 45.660512635667196,
+    "responseAverage": 38.83870967741935,
+    "responseMin": 2,
+    "responseMax": 157,
+    "responseSd": 44.7841394549696,
     "dnsAverage": 0,
     "dnsMin": 0,
     "dnsMax": 0,
@@ -60,8 +60,8 @@
     "firstByteMin": 0,
     "firstByteMax": 0,
     "firstByteSd": 0,
-    "started": 1794830630869,
-    "completed": 1794830634601
+    "started": 1794838966794,
+    "completed": 1794838970704
   },
   "failures": []
 }
