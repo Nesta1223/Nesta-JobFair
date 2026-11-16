@@ -1,0 +1,434 @@
+{
+  "recordedAt": "2026-11-16T12:03:45.943Z",
+  "environment": "Local temporary MongoDB; not an Atlas/load benchmark",
+  "count": 71,
+  "maxMs": 207.62,
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 201,
+      "durationMs": 207.62
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 7.56
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 8.42
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 9.75
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 4.81
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 7.04
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 6.3
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 9.39
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 9.76
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 5.27
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 400,
+      "durationMs": 131.25
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "durationMs": 127.24
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 200,
+      "durationMs": 8.42
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 401,
+      "durationMs": 122.51
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 401,
+      "durationMs": 5.65
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 400,
+      "durationMs": 3.13
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 400,
+      "durationMs": 2.57
+    },
+    {
+      "method": "GET",
+      "path": "/bookings",
+      "status": 401,
+      "durationMs": 1.91
+    },
+    {
+      "method": "GET",
+      "path": "/bookings",
+      "status": 401,
+      "durationMs": 2.12
+    },
+    {
+      "method": "GET",
+      "path": "/bookings",
+      "status": 401,
+      "durationMs": 3.57
+    },
+    {
+      "method": "GET",
+      "path": "/bookings",
+      "status": 401,
+      "durationMs": 11.43
+    },
+    {
+      "method": "GET",
+      "path": "/companies",
+      "status": 401,
+      "durationMs": 2.47
+    },
+    {
+      "method": "GET",
+      "path": "/companies",
+      "status": 200,
+      "durationMs": 10.55
+    },
+    {
+      "method": "GET",
+      "path": "/companies/6afaf120c9c14b578e668172",
+      "status": 200,
+      "durationMs": 6.98
+    },
+    {
+      "method": "POST",
+      "path": "/companies/broken/bookings",
+      "status": 400,
+      "durationMs": 7.86
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf121c9c14b578e66818f/bookings",
+      "status": 404,
+      "durationMs": 7.76
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 6.14
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 6.64
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 7.03
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 5.58
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 5.49
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 5.89
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 5.56
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 201,
+      "durationMs": 25.04
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 201,
+      "durationMs": 13.71
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 201,
+      "durationMs": 15.38
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 8.89
+    },
+    {
+      "method": "GET",
+      "path": "/bookings?user=6afaf120c9c14b578e66816e",
+      "status": 200,
+      "durationMs": 15.12
+    },
+    {
+      "method": "GET",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 200,
+      "durationMs": 8.7
+    },
+    {
+      "method": "GET",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 200,
+      "durationMs": 9.61
+    },
+    {
+      "method": "GET",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 403,
+      "durationMs": 6.88
+    },
+    {
+      "method": "PUT",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 403,
+      "durationMs": 7.69
+    },
+    {
+      "method": "DELETE",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 403,
+      "durationMs": 7.4
+    },
+    {
+      "method": "PUT",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 200,
+      "durationMs": 18.71
+    },
+    {
+      "method": "GET",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 200,
+      "durationMs": 8.82
+    },
+    {
+      "method": "PUT",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 400,
+      "durationMs": 10.1
+    },
+    {
+      "method": "PUT",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 400,
+      "durationMs": 14.52
+    },
+    {
+      "method": "PUT",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 404,
+      "durationMs": 7.48
+    },
+    {
+      "method": "PUT",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 400,
+      "durationMs": 9.08
+    },
+    {
+      "method": "GET",
+      "path": "/bookings/export",
+      "status": 200,
+      "durationMs": 10.79
+    },
+    {
+      "method": "GET",
+      "path": "/bookings/export",
+      "status": 200,
+      "durationMs": 11.45
+    },
+    {
+      "method": "GET",
+      "path": "/bookings/export",
+      "status": 401,
+      "durationMs": 2.26
+    },
+    {
+      "method": "DELETE",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 200,
+      "durationMs": 11.28
+    },
+    {
+      "method": "GET",
+      "path": "/bookings/6afaf121c9c14b578e66819c",
+      "status": 404,
+      "durationMs": 7.89
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 201,
+      "durationMs": 20.52
+    },
+    {
+      "method": "GET",
+      "path": "/bookings",
+      "status": 200,
+      "durationMs": 11.01
+    },
+    {
+      "method": "PUT",
+      "path": "/bookings/6afaf120c9c14b578e66817a",
+      "status": 200,
+      "durationMs": 13.89
+    },
+    {
+      "method": "DELETE",
+      "path": "/bookings/6afaf120c9c14b578e66817a",
+      "status": 200,
+      "durationMs": 9.58
+    },
+    {
+      "method": "GET",
+      "path": "/bookings/not-an-id",
+      "status": 400,
+      "durationMs": 5.39
+    },
+    {
+      "method": "GET",
+      "path": "/bookings/6afaf121c9c14b578e6681f4",
+      "status": 404,
+      "durationMs": 5.9
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 201,
+      "durationMs": 80.04
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 201,
+      "durationMs": 80.01
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 201,
+      "durationMs": 94
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 94.14
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 93.21
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 93.21
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 96.8
+    },
+    {
+      "method": "POST",
+      "path": "/companies/6afaf120c9c14b578e668172/bookings",
+      "status": 400,
+      "durationMs": 96.55
+    },
+    {
+      "method": "GET",
+      "path": "/auth/logout",
+      "status": 200,
+      "durationMs": 2.69
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 401,
+      "durationMs": 2.56
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 200,
+      "durationMs": 4.9
+    }
+  ]
+}

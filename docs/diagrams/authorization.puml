@@ -1,0 +1,28 @@
+@startuml
+actor Client
+participant Router
+participant protect
+participant Controller
+participant Booking
+database MongoDB
+Client -> Router: GET / PUT / DELETE /bookings/:id
+Router -> protect: verify JWT; load User
+protect --> Router: req.user
+Router -> Controller: operation
+Controller -> Booking: findById(id)
+Booking -> MongoDB: query
+MongoDB --> Booking: booking
+Booking --> Controller: booking
+alt missing
+Controller --> Client: 404
+else not owner AND not admin
+Controller --> Client: 403; no mutation
+else owner OR admin
+Controller -> Controller: validate allowed update fields if PUT
+Controller -> Booking: populate / save / deleteOne
+Booking -> MongoDB: read / write
+MongoDB --> Booking: result
+Booking --> Controller: result
+Controller --> Client: 200
+end
+@enduml

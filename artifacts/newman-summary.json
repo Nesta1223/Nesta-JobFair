@@ -1,0 +1,67 @@
+{
+  "recordedAt": "2026-11-16T12:03:54.612Z",
+  "stats": {
+    "iterations": {
+      "total": 1,
+      "pending": 0,
+      "failed": 0
+    },
+    "items": {
+      "total": 31,
+      "pending": 0,
+      "failed": 0
+    },
+    "scripts": {
+      "total": 32,
+      "pending": 0,
+      "failed": 0
+    },
+    "prerequests": {
+      "total": 31,
+      "pending": 0,
+      "failed": 0
+    },
+    "requests": {
+      "total": 31,
+      "pending": 0,
+      "failed": 0
+    },
+    "tests": {
+      "total": 31,
+      "pending": 0,
+      "failed": 0
+    },
+    "assertions": {
+      "total": 111,
+      "pending": 0,
+      "failed": 0
+    },
+    "testScripts": {
+      "total": 31,
+      "pending": 0,
+      "failed": 0
+    },
+    "prerequestScripts": {
+      "total": 1,
+      "pending": 0,
+      "failed": 0
+    }
+  },
+  "timings": {
+    "responseAverage": 35.38709677419355,
+    "responseMin": 3,
+    "responseMax": 141,
+    "responseSd": 45.660512635667196,
+    "dnsAverage": 0,
+    "dnsMin": 0,
+    "dnsMax": 0,
+    "dnsSd": 0,
+    "firstByteAverage": 0,
+    "firstByteMin": 0,
+    "firstByteMax": 0,
+    "firstByteSd": 0,
+    "started": 1794830630869,
+    "completed": 1794830634601
+  },
+  "failures": []
+}

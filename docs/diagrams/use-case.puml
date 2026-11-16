@@ -1,0 +1,32 @@
+@startuml
+left to right direction
+actor Visitor
+actor User
+actor Admin
+rectangle "Online Job Fair Registration" {
+usecase Register
+usecase Login
+usecase Logout
+usecase "Browse companies" as Browse
+usecase "Book interview (max3)" as Create
+usecase "View own bookings" as View
+usecase "Edit own booking" as Edit
+usecase "Delete own booking" as Delete
+usecase "View all bookings" as All
+usecase "Edit any booking" as AnyEdit
+usecase "Delete any booking" as AnyDelete
+}
+Visitor --> Register
+Visitor --> Login
+User --> Logout
+User --> Browse
+User --> Create
+User --> View
+User --> Edit
+User --> Delete
+Admin --> Login
+Admin --> Logout
+Admin --> All
+Admin --> AnyEdit
+Admin --> AnyDelete
+@enduml

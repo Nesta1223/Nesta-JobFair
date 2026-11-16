@@ -1,0 +1,49 @@
+00:00 — Personal interview schedule as CSV
+ส่วนเพิ่ม: ดาวน์โหลดตารางสัมภาษณ์ของตัวเอง
+
+This tutorial explains the extra feature in Nesta, our online job fair registration project. A signed-in student can download their own interview schedule as a CSV file. We will build the protected route, query only that student's bookings, format the file, and verify the result. The examples use our actual source code and recorded local API responses. This walkthrough uses synthetic narration.
+
+00:30 — 1. Start the existing backend
+เริ่มจาก backend เดิม ไม่ต้องเพิ่ม framework
+
+First install the locked dependencies, then start the demo server. This command starts a temporary local MongoDB and creates fictional companies and demo accounts. Log in as Alice and retain the returned token. These published credentials are for disposable rehearsal data only. For the persistent project environment, configure your authorized MongoDB Atlas connection and use your own credentials. Never place a real secret in the repository.
+
+01:00 — 2. Register the export route
+ประกาศ /export ก่อน /:id และใช้ protect
+
+In routes slash bookings, the router first applies protect. The export handler is registered before the colon id route. This order matters: otherwise Express could interpret the word export as a booking identifier. We keep the same route, middleware, controller structure taught in the course. No separate frontend or new authentication system is necessary. An unauthenticated export request must be rejected before querying any schedule data.
+
+01:30 — 3. Filter by the authenticated user
+กรองเจ้าของจาก JWT ไม่รับ user ID จาก client
+
+Next, query bookings using request dot user dot id. Protect has already verified the token and loaded this user. Do not accept an owner identifier from the query string or request body, because a client could replace it with somebody else's identifier. Populate retrieves the company contact fields from the reference. Sort by interview date and identifier so the exported schedule has a stable order.
+
+02:00 — 4. Build the CSV rows
+สร้างหัวตารางและแปลงวันเป็น YYYY-MM-DD
+
+Start with a header row containing the interview date and the four company contact columns. For every booking, convert the stored date to the first ten characters of its ISO representation. Our API stores these date-only values at UTC midnight, so this does not shift the day according to the presenter's computer. A user with no interviews still receives a valid file containing only the headers.
+
+02:30 — 5. Escape cells and prevent formulas
+จัดการ comma, quote และค่าที่อาจเป็นสูตร
+
+Every value passes through CSV cell escaping. Convert null values to an empty string, and surround each cell with double quotes. Embedded double quotes are doubled, which preserves commas and quotation marks inside company names or addresses. Also prefix suspicious formula-leading characters with an apostrophe. This reduces the risk of a spreadsheet interpreting external data as a formula when the downloaded file is opened.
+
+03:00 — 6. Return a downloadable file
+กำหนด content type และชื่อไฟล์ดาวน์โหลด
+
+Join escaped cells with commas and records with carriage return and line feed. The UTF eight byte order mark helps spreadsheet software recognize the encoding. Express sets the content type to text slash CSV and the content disposition to an attachment with the filename my interviews dot CSV. The response is the file itself, not JSON containing a file. Postman can save it with Send and Download.
+
+03:30 — 7. Check the actual response
+ตัวอย่างนี้มาจากการเรียก API จริงบนเครื่อง
+
+Here is a real response captured from our local server. Alice has two interviews, and the CSV contains the header plus those two records. The content type and attachment filename are both checked. The saved evidence is in the artifacts directory, and the sample CSV is in delivery. Tokens were deliberately omitted from the evidence files. This is a local functional demonstration, not a cloud performance benchmark.
+
+04:00 — 8. Verify privacy and edge cases
+ทดสอบสิทธิ์ การ escape และข้อมูลของคนอื่น
+
+Verification needs more than seeing a successful download. Our tests check the content type, filename, row count, and ownership. Alice's file must not contain Bob's interview. A separate test checks quotation marks and a formula-like company name. Another request omits authentication and must return four oh one. The complete regression collection also verifies booking ownership, date validation, administrator actions, and logout behavior.
+
+04:30 — 9. Reproduce and explain the feature
+สรุปวิธีทำและไฟล์ที่ต้องเปิดตอนตอบคำถาม
+
+To reproduce the feature, start the backend and run demo requests seventeen and eighteen. Log in as the student, download the file, and compare it with that student's bookings. The implementation stays within Express, Mongoose, JWT, and the Postman workflow taught in class. The additional work is the personal export and safe CSV serialization. Both team members should review these files and be able to explain the owner filter themselves.

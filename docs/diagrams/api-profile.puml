@@ -1,0 +1,50 @@
+@startuml
+skinparam classAttributeIconSize 0
+class NestaAPI <<Application>>
+class Auth <<Resource>> {
+<<POST>> /register
+<<POST>> /login
+<<GET>> /me
+<<GET>> /logout
+}
+class Companies <<Resource>> {
+<<GET>> list()
+}
+class CompanyResource <<Resource>> {
+<<GET>> get()
+}
+class CompanyBookings <<Resource>> {
+<<GET>> listScoped()
+<<POST>> create()
+}
+class Bookings <<Resource>> {
+<<GET>> listScoped()
+}
+class BookingResource <<Resource>> {
+<<GET>> getOwnedOrAdmin()
+<<PUT>> updateOwnedOrAdmin()
+<<DELETE>> deleteOwnedOrAdmin()
+}
+class Company <<Representation>> {
+name: String
+address: String
+website: String
+description: String
+tel: String
+}
+class Booking <<Representation>> {
+interviewDate: Date
+user: ObjectId
+company: Company
+createdAt: Date
+}
+NestaAPI --> Auth : <<Path>> /api/v1/auth
+NestaAPI --> Companies : <<Path>> /api/v1/companies
+Companies --> CompanyResource : <<Path>> /{companyId}
+CompanyResource --> CompanyBookings : <<Path>> /bookings
+NestaAPI --> Bookings : <<Path>> /api/v1/bookings
+Bookings --> BookingResource : <<Path>> /{id}
+Companies ..> Company : <<use>>
+CompanyBookings ..> Booking : <<use>>
+BookingResource ..> Booking : <<use>>
+@enduml

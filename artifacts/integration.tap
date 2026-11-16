@@ -1,0 +1,294 @@
+
+> nesta-job-fair@1.0.0 test
+> node --test --test-concurrency=1 tests/integration.test.js
+
+TAP version 13
+# Subtest: FR1: register all required fields; hash password; ignore role escalation
+ok 1 - FR1: register all required fields; hash password; ignore role escalation
+  ---
+  duration_ms: 1489.3863
+  ...
+# Subtest: FR1: reject missing name
+ok 2 - FR1: reject missing name
+  ---
+  duration_ms: 8.1117
+  ...
+# Subtest: FR1: reject missing tel
+ok 3 - FR1: reject missing tel
+  ---
+  duration_ms: 8.7071
+  ...
+# Subtest: FR1: reject missing email
+ok 4 - FR1: reject missing email
+  ---
+  duration_ms: 10.0228
+  ...
+# Subtest: FR1: reject missing password
+ok 5 - FR1: reject missing password
+  ---
+  duration_ms: 5.0609
+  ...
+# Subtest: FR1: reject invalid email (string)
+ok 6 - FR1: reject invalid email (string)
+  ---
+  duration_ms: 7.448
+  ...
+# Subtest: FR1: reject invalid tel (string)
+ok 7 - FR1: reject invalid tel (string)
+  ---
+  duration_ms: 6.5455
+  ...
+# Subtest: FR1: reject invalid password (string)
+ok 8 - FR1: reject invalid password (string)
+  ---
+  duration_ms: 9.877
+  ...
+# Subtest: FR1: reject invalid name (object)
+ok 9 - FR1: reject invalid name (object)
+  ---
+  duration_ms: 10.5199
+  ...
+# Subtest: FR1: reject invalid tel (number)
+ok 10 - FR1: reject invalid tel (number)
+  ---
+  duration_ms: 5.5746
+  ...
+# Subtest: FR1: reject duplicate normalized email
+ok 11 - FR1: reject duplicate normalized email
+  ---
+  duration_ms: 131.4664
+  ...
+# Subtest: FR2: login normalized email and HTTP-only cookie
+ok 12 - FR2: login normalized email and HTTP-only cookie
+  ---
+  duration_ms: 136.1681
+  ...
+# Subtest: FR2: wrong password
+ok 13 - FR2: wrong password
+  ---
+  duration_ms: 122.7376
+  ...
+# Subtest: FR2: unknown account
+ok 14 - FR2: unknown account
+  ---
+  duration_ms: 5.9087
+  ...
+# Subtest: FR2: missing credentials
+ok 15 - FR2: missing credentials
+  ---
+  duration_ms: 3.3619
+  ...
+# Subtest: FR2: object injection in email rejected
+ok 16 - FR2: object injection in email rejected
+  ---
+  duration_ms: 2.8288
+  ...
+# Subtest: AUTH: no token
+ok 17 - AUTH: no token
+  ---
+  duration_ms: 2.0734
+  ...
+# Subtest: AUTH: invalid token
+ok 18 - AUTH: invalid token
+  ---
+  duration_ms: 2.2851
+  ...
+# Subtest: AUTH: expired token
+ok 19 - AUTH: expired token
+  ---
+  duration_ms: 5.5677
+  ...
+# Subtest: AUTH: deleted account token
+ok 20 - AUTH: deleted account token
+  ---
+  duration_ms: 12.7065
+  ...
+# Subtest: FR3: company catalogue requires login
+ok 21 - FR3: company catalogue requires login
+  ---
+  duration_ms: 2.6629
+  ...
+# Subtest: FR3: all company fields, no reverse-populated bookings
+ok 22 - FR3: all company fields, no reverse-populated bookings
+  ---
+  duration_ms: 17.9064
+  ...
+# Subtest: FR3: invalid company id
+ok 23 - FR3: invalid company id
+  ---
+  duration_ms: 8.1346
+  ...
+# Subtest: FR3: absent company
+ok 24 - FR3: absent company
+  ---
+  duration_ms: 8.3112
+  ...
+# Subtest: FR3: reject date "2022-05-09"
+ok 25 - FR3: reject date "2022-05-09"
+  ---
+  duration_ms: 6.4136
+  ...
+# Subtest: FR3: reject date "2022-05-14"
+ok 26 - FR3: reject date "2022-05-14"
+  ---
+  duration_ms: 6.855
+  ...
+# Subtest: FR3: reject date "2026-05-10"
+ok 27 - FR3: reject date "2026-05-10"
+  ---
+  duration_ms: 7.2094
+  ...
+# Subtest: FR3: reject date "2022-05-10T00:00:00Z"
+ok 28 - FR3: reject date "2022-05-10T00:00:00Z"
+  ---
+  duration_ms: 5.7593
+  ...
+# Subtest: FR3: reject date "2022-02-30"
+ok 29 - FR3: reject date "2022-02-30"
+  ---
+  duration_ms: 5.6627
+  ...
+# Subtest: FR3: reject date null
+ok 30 - FR3: reject date null
+  ---
+  duration_ms: 6.0422
+  ...
+# Subtest: FR3: reject date {"$gt":""}
+ok 31 - FR3: reject date {"$gt":""}
+  ---
+  duration_ms: 5.7061
+  ...
+# Subtest: FR3: first boundary date; owner comes from JWT, slot hidden
+ok 32 - FR3: first boundary date; owner comes from JWT, slot hidden
+  ---
+  duration_ms: 25.4106
+  ...
+# Subtest: FR3: last boundary date accepted
+ok 33 - FR3: last boundary date accepted
+  ---
+  duration_ms: 13.9392
+  ...
+# Subtest: FR3: third booking accepted
+ok 34 - FR3: third booking accepted
+  ---
+  duration_ms: 15.6102
+  ...
+# Subtest: FR3: fourth booking rejected and count remains 3
+ok 35 - FR3: fourth booking rejected and count remains 3
+  ---
+  duration_ms: 14.6456
+  ...
+# Subtest: FR4: list only owned bookings, ignore forged query scope
+ok 36 - FR4: list only owned bookings, ignore forged query scope
+  ---
+  duration_ms: 24.3845
+  ...
+# Subtest: FR4: own single booking visible
+ok 37 - FR4: own single booking visible
+  ---
+  duration_ms: 9.8409
+  ...
+# Subtest: OWNERSHIP: other user cannot GET booking
+ok 38 - OWNERSHIP: other user cannot GET booking
+  ---
+  duration_ms: 10.3054
+  ...
+# Subtest: OWNERSHIP: other user cannot PUT booking
+ok 39 - OWNERSHIP: other user cannot PUT booking
+  ---
+  duration_ms: 9.3766
+  ...
+# Subtest: OWNERSHIP: other user cannot DELETE booking
+ok 40 - OWNERSHIP: other user cannot DELETE booking
+  ---
+  duration_ms: 9.1745
+  ...
+# Subtest: FR5: update company and date with read-back
+ok 41 - FR5: update company and date with read-back
+  ---
+  duration_ms: 27.9731
+  ...
+# Subtest: FR5: ownership cannot be reassigned
+ok 42 - FR5: ownership cannot be reassigned
+  ---
+  duration_ms: 10.3814
+  ...
+# Subtest: FR5: invalid update preserves existing data
+ok 43 - FR5: invalid update preserves existing data
+  ---
+  duration_ms: 31.6671
+  ...
+# Subtest: FR5: empty update rejected
+ok 44 - FR5: empty update rejected
+  ---
+  duration_ms: 9.4134
+  ...
+# Subtest: EXTRA: CSV contains only own schedule and correct headers
+ok 45 - EXTRA: CSV contains only own schedule and correct headers
+  ---
+  duration_ms: 11.3611
+  ...
+# Subtest: EXTRA: CSV quotes and formula neutralization
+ok 46 - EXTRA: CSV quotes and formula neutralization
+  ---
+  duration_ms: 21.4289
+  ...
+# Subtest: EXTRA: export requires login
+ok 47 - EXTRA: export requires login
+  ---
+  duration_ms: 2.5667
+  ...
+# Subtest: FR6: delete and confirm absence
+ok 48 - FR6: delete and confirm absence
+  ---
+  duration_ms: 19.4932
+  ...
+# Subtest: FR3/6: deleted booking frees quota
+ok 49 - FR3/6: deleted booking frees quota
+  ---
+  duration_ms: 20.808
+  ...
+# Subtest: FR7: administrator lists both users
+ok 50 - FR7: administrator lists both users
+  ---
+  duration_ms: 11.4264
+  ...
+# Subtest: FR8: admin edits someone else and preserves owner
+ok 51 - FR8: admin edits someone else and preserves owner
+  ---
+  duration_ms: 16.5074
+  ...
+# Subtest: FR9: admin deletes someone else
+ok 52 - FR9: admin deletes someone else
+  ---
+  duration_ms: 11.1547
+  ...
+# Subtest: ROBUSTNESS: malformed id and missing record
+ok 53 - ROBUSTNESS: malformed id and missing record
+  ---
+  duration_ms: 11.69
+  ...
+# Subtest: FR3: concurrent creation cannot exceed quota
+ok 54 - FR3: concurrent creation cannot exceed quota
+  ---
+  duration_ms: 101.3686
+  ...
+# Subtest: FR2: logout clears cookie; discarded credentials fail; copied JWT remains valid as taught
+ok 55 - FR2: logout clears cookie; discarded credentials fail; copied JWT remains valid as taught
+  ---
+  duration_ms: 10.5545
+  ...
+# Subtest: NFR: observed local requests finish within 3000 ms
+ok 56 - NFR: observed local requests finish within 3000 ms
+  ---
+  duration_ms: 0.2715
+  ...
+1..56
+# tests 56
+# suites 0
+# pass 56
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4142.6529

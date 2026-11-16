@@ -1,0 +1,16 @@
+{
+  "recordedAt": "2026-11-16T12:15:30.371Z",
+  "method": "GET",
+  "path": "/api/v1/bookings/export",
+  "status": 200,
+  "contentType": "text/csv; charset=utf-8",
+  "contentDisposition": "attachment; filename=\"my-interviews.csv\"",
+  "csv": "\"Interview date\",\"Company\",\"Address\",\"Website\",\"Telephone\"\r\n\"2022-05-10\",\"Atlas Software\",\"100 Phaya Thai Road, Bangkok\",\"https://atlas.example\",\"020000101\"\r\n\"2022-05-11\",\"Blue River Data\",\"200 Silom Road, Bangkok\",\"https://blueriver.example\",\"020000102\"\r\n",
+  "unauthenticated": {
+    "status": 401,
+    "body": {
+      "success": false,
+      "message": "Not authorized to access this route"
+    }
+  }
+}

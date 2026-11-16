@@ -1,0 +1,35 @@
+@startuml
+actor Student
+participant Router
+participant "protect" as Auth
+participant Controller
+participant "Company / Booking" as Model
+database MongoDB
+Student -> Router: POST /companies/:companyId/bookings
+Router -> Auth: verify JWT and load User
+alt invalid token
+Auth --> Student: 401
+else authenticated
+Router -> Controller: addBooking(req)
+Controller -> Controller: validate date
+Controller -> Model: find company and user's slots
+Model -> MongoDB: query
+MongoDB --> Model: results
+Model --> Controller: results
+alt invalid date / company missing / quota full
+Controller --> Student: 400 / 404
+else eligible
+Controller -> Model: create(user from JWT, date, company, slot)
+Model -> MongoDB: insert; unique(user,slot)
+alt duplicate slot from concurrent request
+MongoDB --> Model: duplicate key
+Model --> Controller: duplicate key
+Controller -> Controller: re-read and retry
+else inserted
+MongoDB --> Model: booking
+Model --> Controller: booking (populate company)
+Controller --> Student: 201 (slot excluded)
+end
+end
+end
+@enduml

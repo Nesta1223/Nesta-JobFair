@@ -1,0 +1,930 @@
+{
+  "info": {
+    "name": "Nesta | 7-minute demonstration",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Nesta Project 3. Start npm run demo. Requests disable cookies so token isolation and logout tests are deterministic. Fictional demo credentials only."
+  },
+  "item": [
+    {
+      "name": "01 Registration validation: missing telephone",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "{{URL}}/api/v1/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Demo Student\",\n  \"email\": \"{{RUN_EMAIL}}\",\n  \"password\": \"{{USER_PASSWORD}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "01 Registration validation: missing telephone"
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('RUN_EMAIL', 'demo.' + Date.now() + '@nesta.example');"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(false));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Register student",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "{{URL}}/api/v1/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Nesta Demo Student\",\n  \"tel\": \"0812345678\",\n  \"email\": \"{{RUN_EMAIL}}\",\n  \"password\": \"{{USER_PASSWORD}}\",\n  \"role\": \"admin\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "02 Register student"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.collectionVariables.set('USER_ID', json.data._id);",
+              "pm.test('Cannot self-assign admin', () => pm.expect(json.data.role).to.eql('user'));",
+              "pm.test('Telephone stored', () => pm.expect(json.data.tel).to.eql('0812345678'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 User login",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "{{URL}}/api/v1/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{RUN_EMAIL}}\",\n  \"password\": \"{{USER_PASSWORD}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "03 User login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.collectionVariables.set('USER_TOKEN', json.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Browse companies",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/companies",
+        "description": "04 Browse companies"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.test('Company catalogue present', () => pm.expect(json.count).to.be.at.least(2));",
+              "pm.collectionVariables.set('COMPANY_ID', json.data[0]._id); pm.collectionVariables.set('COMPANY_2_ID', json.data[1]._id);",
+              "pm.test('All required fields', () => json.data.forEach(c => ['name','address','website','description','tel'].forEach(k => pm.expect(c[k]).to.be.a('string'))));",
+              "pm.test('No booking disclosure', () => json.data.forEach(c => pm.expect(c).not.to.have.property('bookings')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Reject date outside the fair",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/companies/{{COMPANY_ID}}/bookings",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"interviewDate\": \"2022-05-14\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "05 Reject date outside the fair"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(false));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.1 Book interview 1 of 3",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/companies/{{COMPANY_ID}}/bookings",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"interviewDate\": \"2022-05-10\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "06.1 Book interview 1 of 3"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.collectionVariables.set('BOOKING_1_ID', json.data._id);",
+              "pm.test('Booking belongs to current user', () => pm.expect(json.data.user).to.eql(pm.collectionVariables.get('USER_ID')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.2 Book interview 2 of 3",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/companies/{{COMPANY_ID}}/bookings",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"interviewDate\": \"2022-05-11\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "06.2 Book interview 2 of 3"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.collectionVariables.set('BOOKING_2_ID', json.data._id);",
+              "pm.test('Booking belongs to current user', () => pm.expect(json.data.user).to.eql(pm.collectionVariables.get('USER_ID')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.3 Book interview 3 of 3",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/companies/{{COMPANY_ID}}/bookings",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"interviewDate\": \"2022-05-12\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "06.3 Book interview 3 of 3"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.collectionVariables.set('BOOKING_3_ID', json.data._id);",
+              "pm.test('Booking belongs to current user', () => pm.expect(json.data.user).to.eql(pm.collectionVariables.get('USER_ID')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Reject fourth interview",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/companies/{{COMPANY_ID}}/bookings",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"interviewDate\": \"2022-05-13\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "07 Reject fourth interview"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(false));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 View own interviews",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/bookings",
+        "description": "08 View own interviews"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.test('Exactly three', () => pm.expect(json.count).to.eql(3));",
+              "pm.test('Only own records', () => json.data.forEach(b => pm.expect(b.user).to.eql(pm.collectionVariables.get('USER_ID'))));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 Edit own interview",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/bookings/{{BOOKING_1_ID}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"interviewDate\": \"2022-05-13\",\n  \"company\": \"{{COMPANY_2_ID}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "09 Edit own interview"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.test('Changed date', () => pm.expect(json.data.interviewDate.slice(0,10)).to.eql('2022-05-13'));",
+              "pm.test('Changed company', () => pm.expect(json.data.company._id).to.eql(pm.collectionVariables.get('COMPANY_2_ID')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 Delete own interview",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/bookings/{{BOOKING_1_ID}}",
+        "description": "10 Delete own interview"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 Logout",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/auth/logout",
+        "description": "11 Logout"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.collectionVariables.unset('USER_TOKEN');",
+              "pm.test('Cookie replaced', () => pm.expect(pm.response.headers.get('Set-Cookie')).to.include('token=none'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 After logout: no credentials",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "{{URL}}/api/v1/bookings",
+        "description": "12 After logout: no credentials"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(false));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 Admin login",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "{{URL}}/api/v1/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{ADMIN_EMAIL}}\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "13 Admin login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.collectionVariables.set('ADMIN_TOKEN', json.token); pm.test('Admin role', () => pm.expect(json.data.role).to.eql('admin'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 Admin sees all users",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ADMIN_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/bookings",
+        "description": "14 Admin sees all users"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.test('Includes current student', () => pm.expect(json.data.some(b => b.user === pm.collectionVariables.get('USER_ID'))).to.eql(true));",
+              "pm.test('Includes another student', () => pm.expect(json.data.some(b => b.user !== pm.collectionVariables.get('USER_ID'))).to.eql(true));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15 Admin edits student booking",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ADMIN_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/bookings/{{BOOKING_2_ID}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"interviewDate\": \"2022-05-13\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "15 Admin edits student booking"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.test('Owner unchanged', () => pm.expect(json.data.user).to.eql(pm.collectionVariables.get('USER_ID')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16 Admin deletes student booking",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ADMIN_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/bookings/{{BOOKING_2_ID}}",
+        "description": "16 Admin deletes student booking"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "17 User login for CSV extra",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "{{URL}}/api/v1/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{RUN_EMAIL}}\",\n  \"password\": \"{{USER_PASSWORD}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "17 User login for CSV extra"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "const json = pm.response.json();",
+              "pm.test('Success flag', () => pm.expect(json.success).to.eql(true));",
+              "pm.collectionVariables.set('USER_TOKEN', json.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "18 EXTRA: download own schedule as CSV",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{URL}}/api/v1/bookings/export",
+        "description": "18 EXTRA: download own schedule as CSV"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('Response under 3 seconds', () => pm.expect(pm.response.responseTime).to.be.below(3000));",
+              "pm.test('CSV content type', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('text/csv'));",
+              "pm.test('One remaining personal booking', () => pm.expect(pm.response.text().trim().split('\\r\\n').length).to.eql(2));"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": []
+}

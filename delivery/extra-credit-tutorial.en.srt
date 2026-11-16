@@ -1,0 +1,199 @@
+1
+00:00:00,000 --> 00:00:06,000
+This tutorial explains the extra feature in Nesta, our online job fair registration project.
+
+2
+00:00:06,000 --> 00:00:12,000
+A signed-in student can download their own interview schedule as a CSV file. We
+
+3
+00:00:12,000 --> 00:00:18,000
+will build the protected route, query only that student's bookings, format the file, and
+
+4
+00:00:18,000 --> 00:00:24,000
+verify the result. The examples use our actual source code and recorded local API
+
+5
+00:00:24,000 --> 00:00:30,000
+responses. This walkthrough uses synthetic narration.
+
+6
+00:00:30,000 --> 00:00:36,000
+First install the locked dependencies, then start the demo server. This command starts a
+
+7
+00:00:36,000 --> 00:00:42,000
+temporary local MongoDB and creates fictional companies and demo accounts. Log in as Alice
+
+8
+00:00:42,000 --> 00:00:48,000
+and retain the returned token. These published credentials are for disposable rehearsal data only.
+
+9
+00:00:48,000 --> 00:00:54,000
+For the persistent project environment, configure your authorized MongoDB Atlas connection and use your
+
+10
+00:00:54,000 --> 00:01:00,000
+own credentials. Never place a real secret in the repository.
+
+11
+00:01:00,000 --> 00:01:06,000
+In routes slash bookings, the router first applies protect. The export handler is registered
+
+12
+00:01:06,000 --> 00:01:12,000
+before the colon id route. This order matters: otherwise Express could interpret the word
+
+13
+00:01:12,000 --> 00:01:18,000
+export as a booking identifier. We keep the same route, middleware, controller structure taught
+
+14
+00:01:18,000 --> 00:01:24,000
+in the course. No separate frontend or new authentication system is necessary. An unauthenticated
+
+15
+00:01:24,000 --> 00:01:30,000
+export request must be rejected before querying any schedule data.
+
+16
+00:01:30,000 --> 00:01:36,000
+Next, query bookings using request dot user dot id. Protect has already verified the
+
+17
+00:01:36,000 --> 00:01:42,000
+token and loaded this user. Do not accept an owner identifier from the query
+
+18
+00:01:42,000 --> 00:01:48,000
+string or request body, because a client could replace it with somebody else's identifier.
+
+19
+00:01:48,000 --> 00:01:54,000
+Populate retrieves the company contact fields from the reference. Sort by interview date and
+
+20
+00:01:54,000 --> 00:02:00,000
+identifier so the exported schedule has a stable order.
+
+21
+00:02:00,000 --> 00:02:06,000
+Start with a header row containing the interview date and the four company contact
+
+22
+00:02:06,000 --> 00:02:12,000
+columns. For every booking, convert the stored date to the first ten characters of
+
+23
+00:02:12,000 --> 00:02:18,000
+its ISO representation. Our API stores these date-only values at UTC midnight, so this
+
+24
+00:02:18,000 --> 00:02:24,000
+does not shift the day according to the presenter's computer. A user with no
+
+25
+00:02:24,000 --> 00:02:30,000
+interviews still receives a valid file containing only the headers.
+
+26
+00:02:30,000 --> 00:02:36,000
+Every value passes through CSV cell escaping. Convert null values to an empty string,
+
+27
+00:02:36,000 --> 00:02:42,000
+and surround each cell with double quotes. Embedded double quotes are doubled, which preserves
+
+28
+00:02:42,000 --> 00:02:48,000
+commas and quotation marks inside company names or addresses. Also prefix suspicious formula-leading characters
+
+29
+00:02:48,000 --> 00:02:54,000
+with an apostrophe. This reduces the risk of a spreadsheet interpreting external data as
+
+30
+00:02:54,000 --> 00:03:00,000
+a formula when the downloaded file is opened.
+
+31
+00:03:00,000 --> 00:03:06,000
+Join escaped cells with commas and records with carriage return and line feed. The
+
+32
+00:03:06,000 --> 00:03:12,000
+UTF eight byte order mark helps spreadsheet software recognize the encoding. Express sets the
+
+33
+00:03:12,000 --> 00:03:18,000
+content type to text slash CSV and the content disposition to an attachment with
+
+34
+00:03:18,000 --> 00:03:24,000
+the filename my interviews dot CSV. The response is the file itself, not JSON
+
+35
+00:03:24,000 --> 00:03:30,000
+containing a file. Postman can save it with Send and Download.
+
+36
+00:03:30,000 --> 00:03:36,000
+Here is a real response captured from our local server. Alice has two interviews,
+
+37
+00:03:36,000 --> 00:03:42,000
+and the CSV contains the header plus those two records. The content type and
+
+38
+00:03:42,000 --> 00:03:48,000
+attachment filename are both checked. The saved evidence is in the artifacts directory, and
+
+39
+00:03:48,000 --> 00:03:54,000
+the sample CSV is in delivery. Tokens were deliberately omitted from the evidence files.
+
+40
+00:03:54,000 --> 00:04:00,000
+This is a local functional demonstration, not a cloud performance benchmark.
+
+41
+00:04:00,000 --> 00:04:06,000
+Verification needs more than seeing a successful download. Our tests check the content type,
+
+42
+00:04:06,000 --> 00:04:12,000
+filename, row count, and ownership. Alice's file must not contain Bob's interview. A separate
+
+43
+00:04:12,000 --> 00:04:18,000
+test checks quotation marks and a formula-like company name. Another request omits authentication and
+
+44
+00:04:18,000 --> 00:04:24,000
+must return four oh one. The complete regression collection also verifies booking ownership, date
+
+45
+00:04:24,000 --> 00:04:30,000
+validation, administrator actions, and logout behavior.
+
+46
+00:04:30,000 --> 00:04:36,000
+To reproduce the feature, start the backend and run demo requests seventeen and eighteen.
+
+47
+00:04:36,000 --> 00:04:42,000
+Log in as the student, download the file, and compare it with that student's
+
+48
+00:04:42,000 --> 00:04:48,000
+bookings. The implementation stays within Express, Mongoose, JWT, and the Postman workflow taught in
+
+49
+00:04:48,000 --> 00:04:54,000
+class. The additional work is the personal export and safe CSV serialization. Both team
+
+50
+00:04:54,000 --> 00:05:00,000
+members should review these files and be able to explain the owner filter themselves.
